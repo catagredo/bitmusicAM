@@ -40,6 +40,126 @@ function crearCancion(req,res){
     });
 }
 
+function buscarCancion(req,res){
+
+    var parametros = req.body;
+    var tituloCanciones= parametros.titulo;
+  
+    Cancion.findOne({titulo:tituloCanciones.toLowerCase()},(err,cancionEncontrada)=>{
+        if(err){
+            // estado de la respuesta del servidor
+            // 500 -> errores propios del servidor
+            res.status(500).send({
+                message: "Error en el servidor :´("
+            });
+        }else{
+            if(!cancionEncontrada){
+                // 404 -> Página no encontrada 
+                res.status(404).send({
+                    message: "Canción no encontrada"
+                });
+            } else{
+                res.status(200).send({
+                    // modelo Usuario : Nuevo Usuario que se va a guardar
+                    cancion: cancionEncontrada
+                });
+            }
+        }
+    });
+
+    
+}
+
+function buscarGenero(req, res) {
+    var parametros = req.body;
+
+    var generoCanciones = parametros.genero;
+    
+
+    Cancion.find({genero: generoCanciones.toLowerCase()},(err,cancionesCreadas)=>{
+        if (err) {
+            res.status(500).send({
+                message: "Error en el servidor"
+
+            });
+
+        } else {
+            if (!cancionesCreadas) {
+                res.status(404).send({
+                    message: "Canciones no encontradas"
+                });
+            } else {
+                res.status(200).send({
+                    canciones: cancionesCreadas
+                });
+            }
+        }
+    });
+   
+
+}
+
+function actualizarCancion(req, res) {
+    
+    var cancionId = req.params.id;
+    var actualizarCancion= req.body;
+
+    Cancion.findByIdAndUpdate(cancionId,actualizarCancion,(err,cancionActualizada)=>{
+        if (err) {
+            res.status(500).send({
+                message: "Error en el servidor"
+
+            });
+
+        } else {
+            if (!cancionActualizada) {
+                res.status(404).send({
+                    message: "Cancion NO actualizada"
+                });
+            } else {
+                res.status(200).send({
+                    cancion: cancionActualizada
+                });
+            }
+        }
+    });
+   
+
+}
+
+function eliminarCancion(req, res) {
+    var cancionId = req.params.id;
+
+    Cancion.findByIdAndDelete(cancionId,(err,cancionEliminada)=>{
+        if (err) {
+            res.status(500).send({
+                message: "Error en el servidor"
+
+            });
+
+        } else {
+            if (!cancionEliminada) {
+                res.status(404).send({
+                    message: "Cancion NO Eliminada"
+                });
+            } else {
+                res.status(200).send({
+                    cancion: cancionEliminada
+                });
+            }
+        }
+    });
+
+}
+
+
+
+
+
 module.exports={
  crearCancion,
+ buscarCancion,
+ buscarGenero,
+ actualizarCancion,
+ eliminarCancion
 };
